@@ -1,0 +1,9 @@
+{
+  "values": {
+    "root_module": {
+      "resources": [
+        {"address":"aws_s3_bucket.state","mode":"managed","type":"aws_s3_bucket","name":"state","values":{"bucket":"state"}}
+      ]
+    }
+  }
+}

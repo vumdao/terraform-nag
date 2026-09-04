@@ -1,0 +1,94 @@
+# Weekly refresh of everything tf-nag vendors from upstream: the cdk-nag AWS
+# Solutions pack, the latest AWS Lambda runtimes, and the AWS provider schema.
+# Drift is pushed to a single sync branch and raised as a PR for review.
+name: upstream-sync
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+env:
+  PYTHON_VERSION: '3.12'
+  TERRAFORM_VERSION: '1.9.8'
+  SYNC_BRANCH: chore/upstream-sync
+  TARGET_BRANCH: master
+
+concurrency:
+  group: upstream-sync
+  cancel-in-progress: false
+
+jobs:
+  upstream_sync:
+    name: Refresh vendored upstream data
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: install_terraform
+        run: |
+          set -euo pipefail
+          curl -fsSL -o terraform.zip \
+            "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip"
+          unzip -o -q terraform.zip -d "$RUNNER_TEMP/terraform"
+          echo "$RUNNER_TEMP/terraform" >> "$GITHUB_PATH"
+
+      # Everything downstream is gated on drift: a week where upstream did not
+      # move ends here.
+      - name: sync_upstream_sources
+        id: sync
+        run: |
+          set -euo pipefail
+          echo "SUMMARY_FILE=$RUNNER_TEMP/sync-summary.md" >> "$GITHUB_ENV"
+          python scripts/sync_upstream.py --summary-out "$RUNNER_TEMP/sync-summary.md"
+          if [[ -z "$(git status --porcelain -- tfnag/data)" ]]; then
+            echo "No upstream drift."
+            echo "drift=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "drift=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      # The refreshed provider schema is what the rule metadata is validated
+      # against, so a failure here means a rule needs remapping by hand. The PR
+      # is still raised, with the failure recorded in its description.
+      - name: run_checks
+        id: validate
+        if: steps.sync.outputs.drift == 'true'
+        run: |
+          set -uo pipefail
+          python -m pip install --quiet pytest ruff
+          python -m pip install --quiet .
+          if python -m pytest -q && python -m ruff check . && python -m ruff format --check .; then
+            echo "validated=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "validated=false" >> "$GITHUB_OUTPUT"
+            {
+              echo
+              echo "### Checks failed"
+              echo
+              echo "- \`pytest\`/\`ruff\` did not pass on the refreshed data."
+              echo "- See the [workflow logs](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID})."
+            } >> "$SUMMARY_FILE"
+          fi
+
+      - name: open_sync_pr
+        id: pr
+        if: steps.sync.outputs.drift == 'true'
+        run: bash .github/scripts/open_sync_pr.sh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: publish_summary
+        if: steps.sync.outputs.drift == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: sync-summary
+          path: ${{ env.SUMMARY_FILE }}

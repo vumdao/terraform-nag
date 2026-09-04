@@ -1,0 +1,1367 @@
+[
+  {
+    "id": "EB1",
+    "rule": "ElasticBeanstalkVPCSpecified",
+    "level": "ERROR",
+    "info": "The Elastic Beanstalk environment is not configured to use a specific VPC.",
+    "cfn": [
+      "Environment"
+    ],
+    "explanation": "Use a non-default VPC in order to separate your environment from default resources."
+  },
+  {
+    "id": "EB3",
+    "rule": "ElasticBeanstalkManagedUpdatesEnabled",
+    "level": "ERROR",
+    "info": "The Elastic Beanstalk environment does not have managed updates enabled.",
+    "cfn": [
+      "Environment"
+    ],
+    "explanation": "Enable managed platform updates for beanstalk environments in order to receive bug fixes, software updates and new features. Managed platform updates perform immutable environment updates."
+  },
+  {
+    "id": "EB4",
+    "rule": "ElasticBeanstalkEC2InstanceLogsToS3",
+    "level": "WARN",
+    "info": "The Elastic Beanstalk environment does not upload EC2 Instance logs to S3.",
+    "cfn": [
+      "Environment"
+    ],
+    "explanation": "Beanstalk environment logs should be retained and uploaded to Amazon S3 in order to keep the logging data for future audits, historical purposes or to track and analyze the EB application environment behavior for a long period of time."
+  },
+  {
+    "id": "EC23",
+    "rule": "EC2RestrictedInbound",
+    "level": "ERROR",
+    "info": "The Security Group allows for 0.0.0.0/0 or ::/0 inbound access.",
+    "cfn": [
+      "SecurityGroup",
+      "SecurityGroupIngress"
+    ],
+    "explanation": "Large port ranges, when open, expose instances to unwanted attacks. More than that, they make traceability of vulnerabilities very difficult. For instance, your web servers may only require 80 and 443 ports to be open, but not all. One of the most common mistakes observed is when  all ports for 0.0.0.0/0 range are open in a rush to access the instance. EC2 instances must expose only to those ports enabled on the corresponding security group level."
+  },
+  {
+    "id": "EC26",
+    "rule": "EC2EBSVolumeEncrypted",
+    "level": "ERROR",
+    "info": "The resource creates one or more EBS volumes that have encryption disabled.",
+    "cfn": [
+      "AutoScalingGroup",
+      "Instance",
+      "LaunchConfiguration",
+      "LaunchTemplate",
+      "Volume"
+    ],
+    "explanation": "With EBS encryption, you aren't required to build, maintain, and secure your own key management infrastructure. EBS encryption uses KMS keys when creating encrypted volumes and snapshots. This helps protect data at rest."
+  },
+  {
+    "id": "EC27",
+    "rule": "EC2SecurityGroupDescription",
+    "level": "ERROR",
+    "info": "The Security Group does not have a description.",
+    "cfn": [
+      "SecurityGroup"
+    ],
+    "explanation": "Descriptions help simplify operations and remove any opportunities for operator errors."
+  },
+  {
+    "id": "EC28",
+    "rule": "EC2InstanceDetailedMonitoringEnabled",
+    "level": "ERROR",
+    "info": "The EC2 instance/AutoScaling launch configuration does not have detailed monitoring enabled.",
+    "cfn": [
+      "Instance",
+      "LaunchConfiguration"
+    ],
+    "explanation": "Monitoring data helps make better decisions on architecting and managing compute resources."
+  },
+  {
+    "id": "EC29",
+    "rule": "EC2InstanceTerminationProtection",
+    "level": "ERROR",
+    "info": "The EC2 instance is not part of an ASG and has Termination Protection disabled.",
+    "cfn": [
+      "Instance"
+    ],
+    "explanation": "Termination Protection safety feature enabled in order to protect the instances from being accidentally terminated."
+  },
+  {
+    "id": "ECR1",
+    "rule": "ECROpenAccess",
+    "level": "ERROR",
+    "info": "The ECR Repository allows open access.",
+    "cfn": [
+      "RegistryPolicy",
+      "Repository"
+    ],
+    "explanation": "Removing * principals in an ECR Repository helps protect against unauthorized access."
+  },
+  {
+    "id": "ECS2",
+    "rule": "ECSTaskDefinitionNoEnvironmentVariables",
+    "level": "ERROR",
+    "info": "The ECS Task Definition includes a container definition that directly specifies environment variables.",
+    "cfn": [
+      "TaskDefinition"
+    ],
+    "explanation": "Use secrets to inject environment variables during container startup from AWS Systems Manager Parameter Store or Secrets Manager instead of directly specifying plaintext environment variables. Updates to direct environment variables require operators to change task definitions and perform new deployments."
+  },
+  {
+    "id": "ECS4",
+    "rule": "ECSClusterCloudWatchContainerInsights",
+    "level": "ERROR",
+    "info": "The ECS Cluster has CloudWatch Container Insights disabled.",
+    "cfn": [
+      "Cluster"
+    ],
+    "explanation": "CloudWatch Container Insights allow operators to gain a better perspective on how the cluster\u2019s applications and microservices are performing."
+  },
+  {
+    "id": "ECS7",
+    "rule": "ECSTaskDefinitionContainerLogging",
+    "level": "ERROR",
+    "info": "One or more containers in the ECS Task Definition do not have container logging enabled.",
+    "cfn": [
+      "TaskDefinition"
+    ],
+    "explanation": "Container logging allows operators to view and aggregate the logs from the container. Containers should use the 'awslogs' driver at a minimum."
+  },
+  {
+    "id": "EKS1",
+    "rule": "EKSClusterNoEndpointPublicAccess",
+    "level": "ERROR",
+    "info": "",
+    "cfn": [
+      "Cluster"
+    ],
+    "explanation": "A cluster's Kubernetes API server endpoint should not be publicly accessible from the Internet in order to avoid exposing private data and minimizing security risks. The API server endpoints should only be accessible from within a AWS Virtual Private Cloud (VPC)."
+  },
+  {
+    "id": "EKS2",
+    "rule": "EKSClusterControlPlaneLogs",
+    "level": "ERROR",
+    "info": "",
+    "cfn": [
+      "Cluster"
+    ],
+    "explanation": "EKS control plane logging provides audit and diagnostic logs directly from the Amazon EKS control plane to CloudWatch Logs in your account. These logs make it easy for you to secure and run your clusters."
+  },
+  {
+    "id": "ELB1",
+    "rule": "CLBNoInboundHttpHttps",
+    "level": "ERROR",
+    "info": "The CLB is used for incoming HTTP/HTTPS traffic. Use ALBs instead.",
+    "cfn": [
+      "LoadBalancer"
+    ],
+    "explanation": "HTTP/HTTPS applications (monolithic or containerized) should use the ALB instead of the CLB for enhanced incoming traffic distribution, better performance and lower costs."
+  },
+  {
+    "id": "ELB2",
+    "rule": "ELBLoggingEnabled",
+    "level": "ERROR",
+    "info": "The ELB does not have access logs enabled.",
+    "cfn": [
+      "LoadBalancer",
+      "LoadBalancerV2"
+    ],
+    "explanation": "Access logs allow operators to analyze traffic patterns and identify and troubleshoot security issues."
+  },
+  {
+    "id": "ELB3",
+    "rule": "CLBConnectionDraining",
+    "level": "ERROR",
+    "info": "The CLB does not have connection draining enabled.",
+    "cfn": [
+      "LoadBalancer"
+    ],
+    "explanation": "With Connection Draining feature enabled, if an EC2 backend instance fails health checks The CLB will not send any new requests to the unhealthy instance. However, it will still allow existing (in-flight) requests to complete for the duration of the configured timeout."
+  },
+  {
+    "id": "ELB4",
+    "rule": "ELBCrossZoneLoadBalancingEnabled",
+    "level": "ERROR",
+    "info": "The CLB does not use at least two AZs with the Cross-Zone Load Balancing feature enabled.",
+    "cfn": [
+      "LoadBalancer"
+    ],
+    "explanation": "CLBs can distribute the traffic evenly across all backend instances. To use Cross-Zone Load Balancing at optimal level, the system should maintain an equal EC2 capacity distribution in each of the AZs registered with the load balancer."
+  },
+  {
+    "id": "ELB5",
+    "rule": "ELBTlsHttpsListenersOnly",
+    "level": "ERROR",
+    "info": "The CLB listener is not configured for secure (HTTPs or SSL) protocols for client communication.",
+    "cfn": [
+      "LoadBalancer"
+    ],
+    "explanation": "The HTTPs or SSL protocols enable secure communication by encrypting the communication between the client and the load balancer."
+  },
+  {
+    "id": "S1",
+    "rule": "S3BucketLoggingEnabled",
+    "level": "ERROR",
+    "info": "The S3 Bucket has server access logs disabled.",
+    "cfn": [
+      "Bucket"
+    ],
+    "explanation": "The bucket should have server access logging enabled to provide detailed records for the requests that are made to the bucket."
+  },
+  {
+    "id": "S2",
+    "rule": "S3BucketLevelPublicAccessProhibited",
+    "level": "ERROR",
+    "info": "The S3 Bucket does not have public access restricted and blocked.",
+    "cfn": [
+      "Bucket"
+    ],
+    "explanation": "The bucket should have public access restricted and blocked to prevent unauthorized access."
+  },
+  {
+    "id": "S5",
+    "rule": "S3WebBucketOAIAccess",
+    "level": "ERROR",
+    "info": "The S3 static website bucket either has an open world bucket policy or does not use a CloudFront Origin Access Identity (OAI) in the bucket policy for limited getObject and/or putObject permissions.",
+    "cfn": [
+      "Bucket",
+      "BucketPolicy"
+    ],
+    "explanation": "An OAI allows you to provide access to content in your S3 static website bucket through CloudFront URLs without enabling public access through an open bucket policy, disabling S3 Block Public Access settings, and/or through object ACLs."
+  },
+  {
+    "id": "S10",
+    "rule": "S3BucketSSLRequestsOnly",
+    "level": "ERROR",
+    "info": "The S3 Bucket or bucket policy does not require requests to use SSL.",
+    "cfn": [
+      "Bucket",
+      "BucketPolicy"
+    ],
+    "explanation": "You can use HTTPS (TLS) to help prevent potential attackers from eavesdropping on or manipulating network traffic using person-in-the-middle or similar attacks. You should allow only encrypted connections over HTTPS (TLS) using the aws:SecureTransport condition on Amazon S3 bucket policies."
+  },
+  {
+    "id": "EFS1",
+    "rule": "EFSEncrypted",
+    "level": "ERROR",
+    "info": "The EFS is not configured for encryption at rest.",
+    "cfn": [
+      "FileSystem"
+    ],
+    "explanation": "By using an encrypted file system, data and metadata are automatically encrypted before being written to the file system. Similarly, as data and metadata are read, they are automatically decrypted before being presented to the application. These processes are handled transparently by EFS without requiring modification of applications."
+  },
+  {
+    "id": "RDS2",
+    "rule": "RDSStorageEncrypted",
+    "level": "ERROR",
+    "info": "The RDS instance or Aurora DB cluster does not have storage encryption enabled.",
+    "cfn": [
+      "DBCluster",
+      "DBInstance"
+    ],
+    "explanation": "Storage encryption helps protect data-at-rest by encrypting the underlying storage, automated backups, read replicas, and snapshots for the database."
+  },
+  {
+    "id": "RDS3",
+    "rule": "RDSMultiAZSupport",
+    "level": "ERROR",
+    "info": "The non-Aurora RDS DB instance does not have multi-AZ support enabled.",
+    "cfn": [
+      "DBInstance"
+    ],
+    "explanation": "Use multi-AZ deployment configurations for high availability and automatic failover support fully managed by AWS."
+  },
+  {
+    "id": "RDS6",
+    "rule": "AuroraMySQLPostgresIAMAuth",
+    "level": "ERROR",
+    "info": "The RDS Aurora MySQL/PostgresSQL cluster does not have IAM Database Authentication enabled.",
+    "cfn": [
+      "DBCluster"
+    ],
+    "explanation": "With IAM Database Authentication enabled, the system doesn't have to use a password when connecting to the MySQL/PostgreSQL database instances, instead it uses an authentication token."
+  },
+  {
+    "id": "RDS8",
+    "rule": "RDSRestrictedInbound",
+    "level": "ERROR",
+    "info": "The RDS DB Security Group allows for 0.0.0.0/0 inbound access.",
+    "cfn": [
+      "DBSecurityGroup",
+      "DBSecurityGroupIngress"
+    ],
+    "explanation": "RDS DB security groups should not allow access from 0.0.0.0/0 (i.e. anywhere, every machine that has the ability to establish a connection) in order to reduce the risk of unauthorized access."
+  },
+  {
+    "id": "RDS10",
+    "rule": "RDSInstanceDeletionProtectionEnabled",
+    "level": "ERROR",
+    "info": "The RDS instance or Aurora DB cluster does not have deletion protection enabled.",
+    "cfn": [
+      "DBCluster",
+      "DBInstance"
+    ],
+    "explanation": "Enabling Deletion Protection at the cluster level for Amazon Aurora databases or instance level for non Aurora instances helps protect from accidental deletion."
+  },
+  {
+    "id": "RDS11",
+    "rule": "RDSNonDefaultPort",
+    "level": "ERROR",
+    "info": "The RDS instance or Aurora DB cluster uses the default endpoint port.",
+    "cfn": [
+      "DBCluster",
+      "DBInstance"
+    ],
+    "explanation": "Port obfuscation (using a non default endpoint port) adds an additional layer of defense against non-targeted attacks (i.e. MySQL/Aurora port 3306, SQL Server port 1433, PostgreSQL port 5432, etc)."
+  },
+  {
+    "id": "RDS13",
+    "rule": "RDSInstanceBackupEnabled",
+    "level": "ERROR",
+    "info": "The RDS instance is not configured for automated backups.",
+    "cfn": [
+      "DBInstance"
+    ],
+    "explanation": "Automated backups allow for point-in-time recovery."
+  },
+  {
+    "id": "RDS14",
+    "rule": "AuroraMySQLBacktrack",
+    "level": "ERROR",
+    "info": "The RDS Aurora MySQL cluster does not have Backtrack enabled.",
+    "cfn": [
+      "DBCluster"
+    ],
+    "explanation": "Backtrack helps order to rewind cluster tables to a specific time, without using backups."
+  },
+  {
+    "id": "RDS16",
+    "rule": "AuroraMySQLLogging",
+    "level": "ERROR",
+    "info": "The RDS Aurora MySQL serverless cluster does not have audit, error, general, and slowquery Log Exports enabled.",
+    "cfn": [
+      "DBCluster"
+    ],
+    "explanation": "This allows operators to use CloudWatch to view logs to help diagnose problems in the database."
+  },
+  {
+    "id": "DDB3",
+    "rule": "DynamoDBPITREnabled",
+    "level": "WARN",
+    "info": "The DynamoDB table does not have Point-in-time Recovery enabled.",
+    "cfn": [
+      "Table"
+    ],
+    "explanation": "DynamoDB continuous backups represent an additional layer of insurance against accidental loss of data on top of on-demand backups. The DynamoDB service can back up the data with per-second granularity and restore it to any single second from the time PITR was enabled up to the prior 35 days."
+  },
+  {
+    "id": "DDB4",
+    "rule": "DAXEncrypted",
+    "level": "ERROR",
+    "info": "The DAX cluster does not have server-side encryption enabled.",
+    "cfn": [
+      "Cluster"
+    ],
+    "explanation": "Data in cache, configuration data and log files should be encrypted using Server-Side Encryption in order to protect from unauthorized access to the underlying storage."
+  },
+  {
+    "id": "AEC1",
+    "rule": "ElastiCacheClusterInVPC",
+    "level": "ERROR",
+    "info": "The ElastiCache cluster is not provisioned in a VPC.",
+    "cfn": [
+      "CacheCluster",
+      "ReplicationGroup"
+    ],
+    "explanation": "Provisioning the cluster within a VPC allows for better flexibility and control over the cache clusters security, availability, traffic routing and more."
+  },
+  {
+    "id": "AEC3",
+    "rule": "ElastiCacheRedisClusterEncryption",
+    "level": "ERROR",
+    "info": "The ElastiCache Redis cluster does not have both encryption in transit and at rest enabled.",
+    "cfn": [
+      "ReplicationGroup"
+    ],
+    "explanation": "Encryption in transit helps secure communications to the cluster. Encryption at rest helps protect data at rest from unauthorized access."
+  },
+  {
+    "id": "AEC4",
+    "rule": "ElastiCacheRedisClusterMultiAZ",
+    "level": "ERROR",
+    "info": "The ElastiCache Redis cluster is not deployed in a Multi-AZ configuration.",
+    "cfn": [
+      "ReplicationGroup"
+    ],
+    "explanation": "The cluster should use a Multi-AZ deployment configuration for high availability."
+  },
+  {
+    "id": "AEC5",
+    "rule": "ElastiCacheClusterNonDefaultPort",
+    "level": "ERROR",
+    "info": "The ElastiCache cluster uses the default endpoint port.",
+    "cfn": [
+      "CacheCluster",
+      "ReplicationGroup"
+    ],
+    "explanation": "Port obfuscation (using a non default endpoint port) adds an additional layer of defense against non-targeted attacks (i.e. Redis port 6379 and Memcached port 11211)."
+  },
+  {
+    "id": "AEC6",
+    "rule": "ElastiCacheRedisClusterRedisAuth",
+    "level": "ERROR",
+    "info": "The ElastiCache Redis cluster does not use Redis AUTH for user authentication.",
+    "cfn": [
+      "ReplicationGroup"
+    ],
+    "explanation": "Redis authentication tokens enable Redis to require a token (password) before allowing clients to execute commands, thereby improving data security."
+  },
+  {
+    "id": "N1",
+    "rule": "NeptuneClusterMultiAZ",
+    "level": "ERROR",
+    "info": "The Neptune DB cluster is not deployed in a Multi-AZ configuration.",
+    "cfn": [
+      "DBCluster"
+    ],
+    "explanation": "The cluster should use a Multi-AZ deployment configuration for high availability."
+  },
+  {
+    "id": "N2",
+    "rule": "NeptuneClusterAutomaticMinorVersionUpgrade",
+    "level": "ERROR",
+    "info": "The Neptune DB instance does not have Auto Minor Version Upgrade enabled.",
+    "cfn": [
+      "DBInstance"
+    ],
+    "explanation": "The Neptune service regularly releases engine updates. Enabling Auto Minor Version Upgrade will allow the service to automatically apply these upgrades to DB Instances."
+  },
+  {
+    "id": "N3",
+    "rule": "NeptuneClusterBackupRetentionPeriod",
+    "level": "ERROR",
+    "info": "The Neptune DB cluster does not have a reasonable minimum backup retention period configured.",
+    "cfn": [
+      "DBCluster"
+    ],
+    "explanation": "The retention period represents the number of days to retain automated snapshots. A minimum retention period of 7 days is recommended but can be adjust to meet system requirements."
+  },
+  {
+    "id": "N4",
+    "rule": "NeptuneClusterEncryptionAtRest",
+    "level": "ERROR",
+    "info": "The Neptune DB cluster does not have encryption at rest enabled.",
+    "cfn": [
+      "DBCluster"
+    ],
+    "explanation": "Encrypting data-at-rest protects data confidentiality and prevents unauthorized users from accessing sensitive information."
+  },
+  {
+    "id": "N5",
+    "rule": "NeptuneClusterIAMAuth",
+    "level": "ERROR",
+    "info": "The Neptune DB cluster does not have IAM Database Authentication enabled.",
+    "cfn": [
+      "DBCluster"
+    ],
+    "explanation": "With IAM Database Authentication enabled, the system doesn't have to use a password when connecting to the cluster."
+  },
+  {
+    "id": "RS1",
+    "rule": "RedshiftRequireTlsSSL",
+    "level": "ERROR",
+    "info": "The Redshift cluster does not require TLS/SSL encryption.",
+    "cfn": [
+      "Cluster",
+      "ClusterParameterGroup"
+    ],
+    "explanation": "Enabling the \"require_ssl\" parameter secures data-in-transit by encrypting the connection between the clients and the Redshift clusters."
+  },
+  {
+    "id": "RS2",
+    "rule": "RedshiftClusterInVPC",
+    "level": "ERROR",
+    "info": "The Redshift cluster is not provisioned in a VPC.",
+    "cfn": [
+      "Cluster"
+    ],
+    "explanation": "Provisioning the cluster within a VPC allows for better flexibility and control over the Redshift clusters security, availability, traffic routing and more."
+  },
+  {
+    "id": "RS3",
+    "rule": "RedshiftClusterNonDefaultUsername",
+    "level": "ERROR",
+    "info": "The Redshift cluster uses the default \"awsuser\" username.",
+    "cfn": [
+      "Cluster"
+    ],
+    "explanation": "Using a custom master user name instead of the default master user name (i.e. \"awsuser\") provides an additional layer of defense against non-targeted attacks."
+  },
+  {
+    "id": "RS4",
+    "rule": "RedshiftClusterNonDefaultPort",
+    "level": "ERROR",
+    "info": "The Redshift cluster uses the default endpoint port.",
+    "cfn": [
+      "Cluster"
+    ],
+    "explanation": "Port obfuscation (using a non default endpoint port) adds an additional layer of defense against non-targeted attacks (i.e. Redshift port 5439)."
+  },
+  {
+    "id": "RS5",
+    "rule": "RedshiftClusterAuditLogging",
+    "level": "ERROR",
+    "info": "The Redshift cluster does not have audit logging enabled.",
+    "cfn": [
+      "Cluster"
+    ],
+    "explanation": "Audit logging helps operators troubleshoot issues and ensure security."
+  },
+  {
+    "id": "RS6",
+    "rule": "RedshiftClusterEncryptionAtRest",
+    "level": "ERROR",
+    "info": "The Redshift cluster does not have encryption at rest enabled.",
+    "cfn": [
+      "Cluster"
+    ],
+    "explanation": "Encrypting data-at-rest protects data confidentiality."
+  },
+  {
+    "id": "RS8",
+    "rule": "RedshiftClusterPublicAccess",
+    "level": "ERROR",
+    "info": "The Redshift cluster is publicly accessible.",
+    "cfn": [
+      "Cluster"
+    ],
+    "explanation": "Disabling public accessibility helps minimize security risks."
+  },
+  {
+    "id": "RS9",
+    "rule": "RedshiftClusterVersionUpgrade",
+    "level": "ERROR",
+    "info": "The Redshift cluster does not have version upgrade enabled.",
+    "cfn": [
+      "Cluster"
+    ],
+    "explanation": "Version Upgrade must enabled to enable the cluster to automatically receive upgrades during the maintenance window."
+  },
+  {
+    "id": "RS10",
+    "rule": "RedshiftBackupEnabled",
+    "level": "ERROR",
+    "info": "The Redshift cluster does not have a retention period for automated snapshots configured.",
+    "cfn": [
+      "Cluster"
+    ],
+    "explanation": "The retention period represents the number of days to retain automated snapshots. A positive retention period should be set to configure this feature."
+  },
+  {
+    "id": "RS11",
+    "rule": "RedshiftClusterUserActivityLogging",
+    "level": "ERROR",
+    "info": "The Redshift cluster does not have user activity logging enabled.",
+    "cfn": [
+      "Cluster",
+      "ClusterParameterGroup"
+    ],
+    "explanation": "User activity logging logs each query before it is performed on the clusters database. To enable this feature associate a Redshift Cluster Parameter Group with the \"enable_user_activity_logging\" parameter set to \"true\"."
+  },
+  {
+    "id": "DOC1",
+    "rule": "DocumentDBClusterEncryptionAtRest",
+    "level": "ERROR",
+    "info": "The Document DB cluster does not have encryption at rest enabled.",
+    "cfn": [
+      "DBCluster"
+    ],
+    "explanation": "Encrypting data-at-rest protects data confidentiality and prevents unauthorized users from accessing sensitive information."
+  },
+  {
+    "id": "DOC2",
+    "rule": "DocumentDBClusterNonDefaultPort",
+    "level": "ERROR",
+    "info": "The Document DB cluster uses the default endpoint port.",
+    "cfn": [
+      "DBCluster"
+    ],
+    "explanation": "Port obfuscation (using a non default endpoint port) adds an additional layer of defense against non-targeted attacks (i.e. MongoDB port 27017)."
+  },
+  {
+    "id": "DOC3",
+    "rule": "DocumentDBCredentialsInSecretsManager",
+    "level": "ERROR",
+    "info": "The Document DB cluster does not have the username and password stored in Secrets Manager.",
+    "cfn": [
+      "DBCluster"
+    ],
+    "explanation": "Secrets Manager enables operators to replace hardcoded credentials in your code, including passwords, with an API call to Secrets Manager to retrieve the secret programmatically. This helps ensure the secret can't be compromised by someone examining system code, because the secret no longer exists in the code. Also, operators can configure Secrets Manager to automatically rotate the secret for you according to a specified schedule. This enables you to replace long-term secrets with short-term ones, significantly reducing the risk of compromise."
+  },
+  {
+    "id": "DOC4",
+    "rule": "DocumentDBClusterBackupRetentionPeriod",
+    "level": "ERROR",
+    "info": "The Document DB cluster does not have a reasonable minimum backup retention period configured.",
+    "cfn": [
+      "DBCluster"
+    ],
+    "explanation": "The retention period represents the number of days to retain automated snapshots. A minimum retention period of 7 days is recommended but can be adjust to meet system requirements."
+  },
+  {
+    "id": "DOC5",
+    "rule": "DocumentDBClusterLogExports",
+    "level": "ERROR",
+    "info": "The Document DB cluster does not have authenticate, createIndex, and dropCollection Log Exports enabled.",
+    "cfn": [
+      "DBCluster"
+    ],
+    "explanation": "This allows operators to use CloudWatch to view logs to help diagnose problems in the database. The events recorded by the AWS DocumentDB audit logs include successful and failed authentication attempts, creating indexes or dropping a collection in a database within the DocumentDB cluster."
+  },
+  {
+    "id": "TS3",
+    "rule": "TimestreamDatabaseCustomerManagedKey",
+    "level": "WARN",
+    "info": "The Timestream database does not use a Customer Managed KMS Key for at rest encryption.",
+    "cfn": [
+      "Database"
+    ],
+    "explanation": "All Timestream tables in a database are encrypted at rest by default using AWS Managed Key. These keys are rotated every three years. Data at rest must be encrypted using CMKs if you require more control over the permissions and lifecycle of your keys, including the ability to have them automatically rotated on an annual basis."
+  },
+  {
+    "id": "VPC3",
+    "rule": "VPCNoNACLs",
+    "level": "WARN",
+    "info": "A Network ACL or Network ACL entry has been implemented.",
+    "cfn": [
+      "NetworkAcl",
+      "NetworkAclEntry"
+    ],
+    "explanation": "Network ACLs should be used sparingly for the following reasons: they can be complex to manage, they are stateless, every IP address must be explicitly opened in each (inbound/outbound) direction, and they affect a complete subnet. Use security groups when possible as they are stateful and easier to manage."
+  },
+  {
+    "id": "VPC7",
+    "rule": "VPCFlowLogsEnabled",
+    "level": "ERROR",
+    "info": "The VPC does not have an associated Flow Log.",
+    "cfn": [
+      "FlowLog",
+      "VPC"
+    ],
+    "explanation": "VPC Flow Logs capture network flow information for a VPC, subnet, or network interface and stores it in Amazon CloudWatch Logs. Flow log data can help customers troubleshoot network issues; for example, to diagnose why specific traffic is not reaching an instance, which might be a result of overly restrictive security group rules."
+  },
+  {
+    "id": "CFR1",
+    "rule": "CloudFrontDistributionGeoRestrictions",
+    "level": "WARN",
+    "info": "The CloudFront distribution may require Geo restrictions.",
+    "cfn": [
+      "Distribution"
+    ],
+    "explanation": "Geo restriction may need to be enabled for the distribution in order to allow or deny a country in order to allow or restrict users in specific locations from accessing content."
+  },
+  {
+    "id": "CFR2",
+    "rule": "CloudFrontDistributionWAFIntegration",
+    "level": "WARN",
+    "info": "The CloudFront distribution may require integration with AWS WAF.",
+    "cfn": [
+      "Distribution"
+    ],
+    "explanation": "The Web Application Firewall can help protect against application-layer attacks that can compromise the security of the system or place unnecessary load on them."
+  },
+  {
+    "id": "CFR3",
+    "rule": "CloudFrontDistributionAccessLogging",
+    "level": "ERROR",
+    "info": "The CloudFront distribution does not have access logging enabled.",
+    "cfn": [
+      "Distribution",
+      "StreamingDistribution"
+    ],
+    "explanation": "Enabling access logs helps operators track all viewer requests for the content delivered through the Content Delivery Network."
+  },
+  {
+    "id": "CFR4",
+    "rule": "CloudFrontDistributionHttpsViewerNoOutdatedSSL",
+    "level": "ERROR",
+    "info": "The CloudFront distribution allows for SSLv3 or TLSv1 for HTTPS viewer connections.",
+    "cfn": [
+      "Distribution"
+    ],
+    "explanation": "Vulnerabilities have been and continue to be discovered in the deprecated SSL and TLS protocols. Help protect viewer connections by specifying a viewer certificate that enforces a minimum of TLSv1.1 or TLSv1.2 in the security policy. Distributions that use the default CloudFront viewer certificate or use 'vip' for the 'SslSupportMethod' are non-compliant with this rule, as the minimum security policy is set to TLSv1 regardless of the specified 'MinimumProtocolVersion'."
+  },
+  {
+    "id": "CFR5",
+    "rule": "CloudFrontDistributionNoOutdatedSSL",
+    "level": "ERROR",
+    "info": "The CloudFront distributions uses SSLv3 or TLSv1 for communication to the origin.",
+    "cfn": [
+      "Distribution"
+    ],
+    "explanation": "Vulnerabilities have been and continue to be discovered in the deprecated SSL and TLS protocols. Using a security policy with minimum TLSv1.1 or TLSv1.2 and appropriate security ciphers for HTTPS helps protect viewer connections."
+  },
+  {
+    "id": "CFR6",
+    "rule": "CloudFrontDistributionS3OriginAccessIdentity",
+    "level": "ERROR",
+    "info": "The CloudFront Streaming distribution does not use an origin access identity with an S3 origin.",
+    "cfn": [
+      "StreamingDistribution"
+    ],
+    "not_applicable_terraform": true,
+    "not_applicable_reason": "Terraform AWS provider has no CloudFront streaming-distribution resource.",
+    "explanation": "Origin access identities help with security by restricting any direct access to objects through S3 URLs."
+  },
+  {
+    "id": "CFR7",
+    "rule": "CloudFrontDistributionS3OriginAccessControl",
+    "level": "ERROR",
+    "info": "The CloudFront distribution does not use an origin access control with an S3 origin.",
+    "cfn": [
+      "Bucket",
+      "Distribution"
+    ],
+    "explanation": "Origin access controls help with security by restricting any direct access to objects through S3 URLs."
+  },
+  {
+    "id": "APIG1",
+    "rule": "APIGWAccessLogging",
+    "level": "ERROR",
+    "info": "The API does not have access logging enabled.",
+    "cfn": [
+      "Stage",
+      "V2Stage"
+    ],
+    "explanation": "Enabling access logs helps operators view who accessed an API and how the caller accessed the API."
+  },
+  {
+    "id": "APIG2",
+    "rule": "APIGWRequestValidation",
+    "level": "ERROR",
+    "info": "The REST API does not have request validation enabled.",
+    "cfn": [
+      "RequestValidator",
+      "RestApi"
+    ],
+    "explanation": "The API should have basic request validation enabled. If the API is integrated with custom source (Lambda, ECS, etc..) in the backend, deeper input validation should be considered for implementation."
+  },
+  {
+    "id": "APIG3",
+    "rule": "APIGWAssociatedWithWAF",
+    "level": "WARN",
+    "info": "The REST API stage is not associated with AWS WAFv2 web ACL.",
+    "cfn": [
+      "Stage",
+      "WebACLAssociation"
+    ],
+    "explanation": "AWS WAFv2 is a web application firewall that helps protect web applications and APIs from attacks by allowing configured rules to allow, block, or monitor (count) web requests based on customizable rules and conditions that are defined."
+  },
+  {
+    "id": "APIG4",
+    "rule": "APIGWAuthorization",
+    "level": "ERROR",
+    "info": "The API does not implement authorization.",
+    "cfn": [
+      "Method",
+      "Route"
+    ],
+    "explanation": "In most cases an API needs to have an authentication and authorization implementation strategy. This includes using such approaches as IAM, Cognito User Pools, Custom authorizer, etc."
+  },
+  {
+    "id": "APIG6",
+    "rule": "APIGWExecutionLoggingEnabled",
+    "level": "ERROR",
+    "info": "The REST API Stage does not have CloudWatch logging enabled for all methods.",
+    "cfn": [
+      "Stage"
+    ],
+    "explanation": "Enabling CloudWatch logs at the stage level helps operators to track and analyze execution behavior at the API stage level."
+  },
+  {
+    "id": "AS1",
+    "rule": "AutoScalingGroupCooldownPeriod",
+    "level": "ERROR",
+    "info": "The Auto Scaling Group does not have a cooldown period.",
+    "cfn": [
+      "AutoScalingGroup"
+    ],
+    "explanation": "A cooldown period temporarily suspends any scaling activities in order to allow the newly launched EC2 instance(s) some time to start handling the application traffic."
+  },
+  {
+    "id": "AS2",
+    "rule": "AutoScalingGroupHealthCheck",
+    "level": "ERROR",
+    "info": "The Auto Scaling Group does not have properly configured health checks.",
+    "cfn": [
+      "AutoScalingGroup"
+    ],
+    "explanation": "The health check feature enables the service to detect whether its registered EC2 instances are healthy or not."
+  },
+  {
+    "id": "AS3",
+    "rule": "AutoScalingGroupScalingNotifications",
+    "level": "ERROR",
+    "info": "The Auto Scaling Group does not have notifications configured for all scaling events.",
+    "cfn": [
+      "AutoScalingGroup"
+    ],
+    "explanation": "Notifications on EC2 instance launch, launch error, termination, and termination errors allow operators to gain better insights into systems attributes such as activity and health."
+  },
+  {
+    "id": "LEX4",
+    "rule": "LexBotAliasEncryptedConversationLogs",
+    "level": "ERROR",
+    "info": "Lex conversation logs are enabled and not encrypted with a KMS key.",
+    "cfn": [
+      "Bot",
+      "BotAlias",
+      "LogGroup"
+    ],
+    "explanation": "You can use encryption to help protect the contents of your conversation logs. For text and audio logs, you can use AWS KMS customer managed CMKs to encrypt data in your CloudWatch Logs log group and S3 bucket."
+  },
+  {
+    "id": "SM1",
+    "rule": "SageMakerNotebookInVPC",
+    "level": "ERROR",
+    "info": "The SageMaker notebook instance is not provisioned inside a VPC.",
+    "cfn": [
+      "NotebookInstance"
+    ],
+    "explanation": "Provisioning the notebook instances inside a VPC enables the notebook to access VPC-only resources such as EFS file systems."
+  },
+  {
+    "id": "SM2",
+    "rule": "SageMakerNotebookInstanceKMSKeyConfigured",
+    "level": "ERROR",
+    "info": "The SageMaker notebook instance does not have an encrypted storage volume.",
+    "cfn": [
+      "NotebookInstance"
+    ],
+    "explanation": "Encrypting storage volumes helps protect SageMaker data-at-rest."
+  },
+  {
+    "id": "SM3",
+    "rule": "SageMakerNotebookNoDirectInternetAccess",
+    "level": "ERROR",
+    "info": "The SageMaker notebook instance has direct internet access enabled.",
+    "cfn": [
+      "NotebookInstance"
+    ],
+    "explanation": "Disabling public accessibility helps minimize security risks."
+  },
+  {
+    "id": "EMR2",
+    "rule": "EMRS3AccessLogging",
+    "level": "ERROR",
+    "info": "The EMR cluster does not have S3 logging enabled.",
+    "cfn": [
+      "Cluster"
+    ],
+    "explanation": "Uploading logs to S3 enables the system to keep the logging data for historical purposes or to track and analyze the clusters behavior."
+  },
+  {
+    "id": "EMR4",
+    "rule": "EMRLocalDiskEncryption",
+    "level": "ERROR",
+    "info": "The EMR cluster does not use a security configuration with local disk encryption enabled.",
+    "cfn": [
+      "Cluster",
+      "SecurityConfiguration"
+    ],
+    "explanation": "Local disk encryption uses a combination of open-source HDFS encryption and LUKS encryption to secure data at rest."
+  },
+  {
+    "id": "EMR5",
+    "rule": "EMREncryptionInTransit",
+    "level": "ERROR",
+    "info": "The EMR cluster does not use a security configuration with encryption in transit enabled and configured.",
+    "cfn": [
+      "Cluster",
+      "SecurityConfiguration"
+    ],
+    "explanation": "EMR Clusters should have a method for encrypting data in transit using Transport Layer Security (TLS)."
+  },
+  {
+    "id": "EMR6",
+    "rule": "EMRAuthEC2KeyPairOrKerberos",
+    "level": "ERROR",
+    "info": "The EMR cluster does not implement authentication via an EC2 Key Pair or Kerberos.",
+    "cfn": [
+      "Cluster"
+    ],
+    "explanation": "SSH clients can use an EC2 key pair to authenticate to cluster instances. Alternatively, with EMR release version 5.10.0 or later, solutions can configure Kerberos to authenticate users and SSH connections to the master node."
+  },
+  {
+    "id": "GL1",
+    "rule": "GlueEncryptedCloudWatchLogs",
+    "level": "WARN",
+    "info": "The Glue crawler or job does not use a security configuration with CloudWatch Log encryption enabled.",
+    "cfn": [
+      "Crawler",
+      "Job",
+      "SecurityConfiguration"
+    ],
+    "explanation": "Enabling encryption at rest helps prevent unauthorized users from getting access to the logging data published to CloudWatch Logs."
+  },
+  {
+    "id": "GL3",
+    "rule": "GlueJobBookmarkEncrypted",
+    "level": "WARN",
+    "info": "The Glue job does not use a security configuration with job bookmark encryption enabled.",
+    "cfn": [
+      "Job",
+      "SecurityConfiguration"
+    ],
+    "explanation": "Job bookmark encryption encrypts bookmark data before it is sent to Amazon S3 for storage."
+  },
+  {
+    "id": "KDA3",
+    "rule": "KinesisDataAnalyticsFlinkCheckpointing",
+    "level": "WARN",
+    "info": "The Kinesis Data Analytics Flink Application does not have checkpointing enabled.",
+    "cfn": [
+      "ApplicationV2"
+    ],
+    "explanation": "Checkpoints are backups of application state that KDA automatically creates periodically and uses to restore from faults."
+  },
+  {
+    "id": "KDF1",
+    "rule": "KinesisDataFirehoseSSE",
+    "level": "ERROR",
+    "info": "The Kinesis Data Firehose delivery stream does not have server-side encryption enabled.",
+    "cfn": [
+      "DeliveryStream"
+    ],
+    "explanation": "This allows the system to meet strict regulatory requirements and enhance the security of system data."
+  },
+  {
+    "id": "KDS1",
+    "rule": "KinesisDataStreamSSE",
+    "level": "ERROR",
+    "info": "The Kinesis Data Stream does not has server-side encryption enabled.",
+    "cfn": [
+      "Stream"
+    ],
+    "explanation": "Data is encrypted before it's written to the Kinesis stream storage layer, and decrypted after it's retrieved from storage. This allows the system to meet strict regulatory requirements and enhance the security of system data."
+  },
+  {
+    "id": "KDS3",
+    "rule": "KinesisDataStreamDefaultKeyWhenSSE",
+    "level": "WARN",
+    "info": "The Kinesis Data Stream specifies server-side encryption and does not use the \"aws/kinesis\" key.",
+    "cfn": [
+      "Stream"
+    ],
+    "explanation": "Customer Managed Keys can incur additional costs that scale with the amount of consumers and producers. Ensure that Customer Managed Keys are required for compliance before using them (https://docs.aws.amazon.com/streams/latest/dev/costs-performance.html)."
+  },
+  {
+    "id": "MSK2",
+    "rule": "MSKClientToBrokerTLS",
+    "level": "ERROR",
+    "info": "The MSK cluster uses plaintext communication between clients and brokers.",
+    "cfn": [
+      "Cluster"
+    ],
+    "explanation": "TLS only communication secures data-in-transit by encrypting the connection between the clients and brokers."
+  },
+  {
+    "id": "MSK3",
+    "rule": "MSKBrokerToBrokerTLS",
+    "level": "ERROR",
+    "info": "The MSK cluster uses plaintext communication between brokers.",
+    "cfn": [
+      "Cluster"
+    ],
+    "explanation": "TLS communication secures data-in-transit by encrypting the connection between brokers."
+  },
+  {
+    "id": "MSK6",
+    "rule": "MSKBrokerLogging",
+    "level": "ERROR",
+    "info": "The MSK cluster does not send broker logs to a supported destination.",
+    "cfn": [
+      "Cluster"
+    ],
+    "explanation": "Broker logs enable operators to troubleshoot Apache Kafka applications and to analyze their communications with the MSK cluster. The cluster can deliver logs to the following resources: a CloudWatch log group, an S3 bucket, a Kinesis Data Firehose delivery stream."
+  },
+  {
+    "id": "OS1",
+    "rule": "OpenSearchInVPCOnly",
+    "level": "ERROR",
+    "info": "The OpenSearch Service domain is not provisioned inside a VPC.",
+    "cfn": [
+      "Domain"
+    ],
+    "explanation": "Provisioning the domain within a VPC enables better flexibility and control over the clusters access and security as this feature keeps all traffic between the VPC and OpenSearch domains within the AWS network instead of going over the public Internet."
+  },
+  {
+    "id": "OS2",
+    "rule": "OpenSearchNodeToNodeEncryption",
+    "level": "ERROR",
+    "info": "The OpenSearch Service domain does not have node-to-node encryption enabled.",
+    "cfn": [
+      "Domain"
+    ],
+    "explanation": "Enabling the node-to-node encryption feature adds an extra layer of data protection on top of the existing ES security features such as HTTPS client to cluster encryption and data-at-rest encryption."
+  },
+  {
+    "id": "OS3",
+    "rule": "OpenSearchAllowlistedIPs",
+    "level": "ERROR",
+    "info": "The OpenSearch Service domain does not only grant access via allowlisted IP addresses.",
+    "cfn": [
+      "Domain"
+    ],
+    "explanation": "Using allowlisted IP addresses helps protect the domain against unauthorized access."
+  },
+  {
+    "id": "OS4",
+    "rule": "OpenSearchDedicatedMasterNode",
+    "level": "ERROR",
+    "info": "The OpenSearch Service domain does not use dedicated master nodes.",
+    "cfn": [
+      "Domain"
+    ],
+    "explanation": "Using dedicated master nodes helps improve environmental stability by offloading all the management tasks from the data nodes."
+  },
+  {
+    "id": "OS5",
+    "rule": "OpenSearchNoUnsignedOrAnonymousAccess",
+    "level": "ERROR",
+    "info": "The OpenSearch Service domain allows for unsigned requests or anonymous access.",
+    "cfn": [
+      "Domain"
+    ],
+    "explanation": "Restricting public access helps prevent unauthorized access and prevents any unsigned requests to be made to the resources."
+  },
+  {
+    "id": "OS7",
+    "rule": "OpenSearchZoneAwareness",
+    "level": "ERROR",
+    "info": "The OpenSearch Service domain does not have Zone Awareness enabled.",
+    "cfn": [
+      "Domain"
+    ],
+    "explanation": "Enabling cross-zone replication (Zone Awareness) increases the availability of the OpenSearch Service domain by allocating the nodes and replicate the data across two AZs in the same region in order to prevent data loss and minimize downtime in the event of node or AZ failure."
+  },
+  {
+    "id": "OS8",
+    "rule": "OpenSearchEncryptedAtRest",
+    "level": "ERROR",
+    "info": "The OpenSearch Service domain does not have encryption at rest enabled.",
+    "cfn": [
+      "Domain"
+    ],
+    "explanation": "Encrypting data-at-rest protects data confidentiality and prevents unauthorized users from accessing sensitive information."
+  },
+  {
+    "id": "OS9",
+    "rule": "OpenSearchSlowLogsToCloudWatch",
+    "level": "ERROR",
+    "info": "The OpenSearch Service domain does not minimally publish SEARCH_SLOW_LOGS and INDEX_SLOW_LOGS to CloudWatch Logs.",
+    "cfn": [
+      "Domain"
+    ],
+    "explanation": "These logs enable operators to gain full insight into the performance of these operations."
+  },
+  {
+    "id": "QS1",
+    "rule": "QuicksightSSLConnections",
+    "level": "ERROR",
+    "info": "The Quicksight data sources connection is not configured to use SSL.",
+    "cfn": [
+      "DataSource"
+    ],
+    "explanation": "SSL secures communications to data sources, especially when using public networks. Using SSL with QuickSight requires the use of certificates signed by a publicly-recognized certificate authority."
+  },
+  {
+    "id": "IAM4",
+    "rule": "IAMNoManagedPolicies",
+    "level": "ERROR",
+    "info": "The IAM user, role, or group uses AWS managed policies.",
+    "cfn": [
+      "Group",
+      "Role",
+      "User"
+    ],
+    "explanation": "An AWS managed policy is a standalone policy that is created and administered by AWS. Currently, many AWS managed policies do not restrict resource scope. Replace AWS managed policies with system specific (customer) managed policies."
+  },
+  {
+    "id": "IAM5",
+    "rule": "IAMNoWildcardPermissions",
+    "level": "ERROR",
+    "info": "The IAM entity contains wildcard permissions and does not have a tf-nag rule suppression with evidence for those permission.",
+    "cfn": [
+      "Group",
+      "ManagedPolicy",
+      "Policy",
+      "Role",
+      "User"
+    ],
+    "explanation": "Metadata explaining the evidence (e.g. via supporting links) for wildcard permissions allows for transparency to operators. "
+  },
+  {
+    "id": "COG1",
+    "rule": "CognitoUserPoolStrongPasswordPolicy",
+    "level": "ERROR",
+    "info": "The Cognito user pool does not have a password policy that minimally specify a password length of at least 8 characters, as well as requiring uppercase, numeric, and special characters.",
+    "cfn": [
+      "UserPool"
+    ],
+    "explanation": "Strong password policies increase system security by encouraging users to create reliable and secure passwords."
+  },
+  {
+    "id": "COG2",
+    "rule": "CognitoUserPoolMFA",
+    "level": "WARN",
+    "info": "The Cognito user pool does not require MFA.",
+    "cfn": [
+      "UserPool"
+    ],
+    "explanation": "Multi-factor authentication (MFA) increases security for the application by adding another authentication method, and not relying solely on user name and password."
+  },
+  {
+    "id": "COG4",
+    "rule": "CognitoUserPoolAPIGWAuthorizer",
+    "level": "ERROR",
+    "info": "The API GW method does not use a Cognito user pool authorizer.",
+    "cfn": [
+      "Method"
+    ],
+    "explanation": "API Gateway validates the tokens from a successful user pool authentication, and uses them to grant your users access to resources including Lambda functions, or your own API."
+  },
+  {
+    "id": "COG7",
+    "rule": "CognitoUserPoolNoUnauthenticatedLogins",
+    "level": "ERROR",
+    "info": "The Cognito identity pool allows for unauthenticated logins and does not have a tf-nag rule suppression with a reason.",
+    "cfn": [
+      "IdentityPool"
+    ],
+    "explanation": "In many cases applications do not warrant unauthenticated guest access applications. Metadata explaining the use case allows for transparency to operators."
+  },
+  {
+    "id": "COG8",
+    "rule": "CognitoUserPoolPlusTier",
+    "level": "ERROR",
+    "info": "The Cognito user pool is not on the plus tier / feature plan.",
+    "cfn": [
+      "UserPool"
+    ],
+    "explanation": "Plus tier enables advanced security features such as detecting and acting upon malicious sign-in attempts and protecting against unsafe passwords."
+  },
+  {
+    "id": "KMS5",
+    "rule": "KMSBackingKeyRotationEnabled",
+    "level": "ERROR",
+    "info": "The KMS Symmetric key does not have automatic key rotation enabled.",
+    "cfn": [
+      "Key"
+    ],
+    "explanation": "KMS key rotation allows a system to set an yearly rotation schedule for a KMS key so when an AWS KMS key is required to encrypt new data, the KMS service can automatically use the latest version of the HSA backing key to perform the encryption."
+  },
+  {
+    "id": "SMG4",
+    "rule": "SecretsManagerRotationEnabled",
+    "level": "ERROR",
+    "info": "The secret does not have automatic rotation scheduled.",
+    "cfn": [
+      "RotationSchedule",
+      "Secret",
+      "SecretTargetAttachment",
+      "TargetAttachment"
+    ],
+    "explanation": "AWS Secrets Manager can be configured to automatically rotate the secret for a secured service or database."
+  },
+  {
+    "id": "ASC3",
+    "rule": "AppSyncGraphQLRequestLogging",
+    "level": "ERROR",
+    "info": "The GraphQL API does not have request level logging enabled.",
+    "cfn": [
+      "GraphQLApi"
+    ],
+    "explanation": "It is important to use CloudWatch Logs to log metrics such as who has accessed the GraphQL API, how the caller accessed the API, and invalid requests."
+  },
+  {
+    "id": "SF1",
+    "rule": "StepFunctionStateMachineAllLogsToCloudWatch",
+    "level": "ERROR",
+    "info": "The Step Function does not log \"ALL\" events to CloudWatch Logs.",
+    "cfn": [
+      "StateMachine"
+    ],
+    "explanation": "Logging \"ALL\" events to CloudWatch logs help operators troubleshoot and audit systems."
+  },
+  {
+    "id": "SF2",
+    "rule": "StepFunctionStateMachineXray",
+    "level": "ERROR",
+    "info": "The Step Function does not have X-Ray tracing enabled.",
+    "cfn": [
+      "StateMachine"
+    ],
+    "explanation": "X-Ray provides an end-to-end view of how an application is performing. This helps operators to discover performance issues, detect permission problems, and track requests made to and from other AWS services."
+  },
+  {
+    "id": "EVB1",
+    "rule": "EventBusOpenAccess",
+    "level": "ERROR",
+    "info": "The event bus policy allows for open access.",
+    "cfn": [
+      "EventBusPolicy"
+    ],
+    "explanation": "An open policy (\"*\" principal without a condition) grants anonymous access to an event bus. Use a condition to limit the permission to accounts that fulfill a certain requirement, such as being a member of a certain AWS organization."
+  },
+  {
+    "id": "SNS3",
+    "rule": "SNSTopicSSLPublishOnly",
+    "level": "ERROR",
+    "info": "The SNS Topic does not require publishers to use SSL.",
+    "cfn": [
+      "Topic",
+      "TopicPolicy"
+    ],
+    "explanation": "Without HTTPS (TLS), a network-based attacker can eavesdrop on network traffic or manipulate it, using an attack such as man-in-the-middle. Allow only encrypted connections over HTTPS (TLS) using the aws:SecureTransport condition and the 'sns: Publish' action in the topic policy to force publishers to use SSL. If SSE is already enabled then this control is auto enforced."
+  },
+  {
+    "id": "SQS2",
+    "rule": "SQSQueueSSE",
+    "level": "ERROR",
+    "info": "The SQS Queue does not have server-side encryption enabled.",
+    "cfn": [
+      "Queue"
+    ],
+    "explanation": "Server side encryption adds additional protection of sensitive data delivered as messages to subscribers."
+  },
+  {
+    "id": "SQS3",
+    "rule": "SQSQueueDLQ",
+    "level": "ERROR",
+    "info": "The SQS queue is not used as a dead-letter queue (DLQ) and does not have a DLQ enabled.",
+    "cfn": [
+      "Function",
+      "Queue"
+    ],
+    "explanation": "Using a DLQ helps maintain the queue flow and avoid losing data by detecting and mitigating failures and service disruptions on time."
+  },
+  {
+    "id": "SQS4",
+    "rule": "SQSQueueSSLRequestsOnly",
+    "level": "ERROR",
+    "info": "The SQS queue does not require requests to use SSL.",
+    "cfn": [
+      "Queue",
+      "QueuePolicy"
+    ],
+    "explanation": "Without HTTPS (TLS), a network-based attacker can eavesdrop on network traffic or manipulate it, using an attack such as man-in-the-middle. Allow only encrypted connections over HTTPS (TLS) using the aws:SecureTransport condition in the queue policy to force requests to use SSL."
+  },
+  {
+    "id": "MS1",
+    "rule": "MediaStoreContainerAccessLogging",
+    "level": "ERROR",
+    "info": "The MediaStore container does not have container access logging enabled.",
+    "cfn": [
+      "Container"
+    ],
+    "explanation": "The container should have access logging enabled to provide detailed records for the requests that are made to the container.",
+    "not_applicable_terraform": true,
+    "not_applicable_reason": "Terraform AWS provider exposes no MediaStore access-logging configuration."
+  },
+  {
+    "id": "MS3",
+    "rule": "MediaStoreContainerSSLRequestsOnly",
+    "level": "ERROR",
+    "info": "The MediaStore container does not require requests to use SSL.",
+    "cfn": [
+      "Container"
+    ],
+    "explanation": "You can use HTTPS (TLS) to help prevent potential attackers from eavesdropping on or manipulating network traffic using person-in-the-middle or similar attacks. You should allow only encrypted connections over HTTPS (TLS) using the aws:SecureTransport condition on MediaStore container policies."
+  },
+  {
+    "id": "MS4",
+    "rule": "MediaStoreCloudWatchMetricPolicy",
+    "level": "WARN",
+    "info": "The MediaStore container does not define a metric policy to send metrics to CloudWatch.",
+    "cfn": [
+      "Container"
+    ],
+    "explanation": "Using a combination of MediaStore metrics and CloudWatch alarms helps operators gain better insights into container operations.",
+    "not_applicable_terraform": true,
+    "not_applicable_reason": "Terraform AWS provider exposes no MediaStore CloudWatch metric-policy resource."
+  },
+  {
+    "id": "MS7",
+    "rule": "MediaStoreContainerHasContainerPolicy",
+    "level": "WARN",
+    "info": "The MediaStore container does not define a container policy.",
+    "cfn": [
+      "Container"
+    ],
+    "explanation": "Using a container policy helps follow the standard security advice of granting least privilege, or granting only the permissions required to allow needed access to the container."
+  },
+  {
+    "id": "MS8",
+    "rule": "MediaStoreContainerCORSPolicy",
+    "level": "WARN",
+    "info": "The MediaStore container does not define a CORS policy.",
+    "cfn": [
+      "Container"
+    ],
+    "explanation": "Using a CORS policy helps follow the standard security advice of granting least privilege, or granting only the permissions required to allow needed access to the container.",
+    "not_applicable_terraform": true,
+    "not_applicable_reason": "Terraform AWS provider exposes no MediaStore CORS-policy resource."
+  },
+  {
+    "id": "MS10",
+    "rule": "MediaStoreContainerLifecyclePolicy",
+    "level": "WARN",
+    "info": "The MediaStore container does not define a lifecycle policy.",
+    "cfn": [
+      "Container"
+    ],
+    "explanation": "Many use cases warrant the usage of lifecycle configurations to manage container objects during their lifetime.",
+    "not_applicable_terraform": true,
+    "not_applicable_reason": "Terraform AWS provider exposes no MediaStore lifecycle-policy resource."
+  },
+  {
+    "id": "CB4",
+    "rule": "CodeBuildProjectKMSEncryptedArtifacts",
+    "level": "ERROR",
+    "info": "The CodeBuild project does not use an AWS KMS key for encryption.",
+    "cfn": [
+      "Project"
+    ],
+    "explanation": "Using an AWS KMS key helps follow the standard security advice of granting least privilege to objects generated by the project."
+  },
+  {
+    "id": "CB5",
+    "rule": "CodeBuildProjectManagedImages",
+    "level": "WARN",
+    "info": "The Codebuild project does not use images provided by the CodeBuild service or have a tf-nag suppression rule explaining the need for a custom image.",
+    "cfn": [
+      "Project"
+    ],
+    "explanation": "Explaining differences/edits to Docker images helps operators better understand system dependencies."
+  },
+  {
+    "id": "C91",
+    "rule": "Cloud9InstanceNoIngressSystemsManager",
+    "level": "ERROR",
+    "info": "The Cloud9 instance does not use a no-ingress EC2 instance with AWS Systems Manager.",
+    "cfn": [
+      "EnvironmentEC2"
+    ],
+    "explanation": "SSM adds an additional layer of protection as it allows operators to control access through IAM permissions and does not require opening inbound ports."
+  },
+  {
+    "id": "L1",
+    "rule": "LambdaLatestVersion",
+    "level": "ERROR",
+    "info": "The non-container Lambda function is not configured to use the latest runtime version.",
+    "cfn": [
+      "Function"
+    ],
+    "explanation": "Use the latest available runtime for the targeted language to avoid technical debt. Runtimes specific to a language or framework version are deprecated when the version reaches end of life. This rule only applies to non-container Lambda functions."
+  }
+]

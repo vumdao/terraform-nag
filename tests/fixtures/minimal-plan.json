@@ -1,0 +1,35 @@
+{
+  "format_version": "1.2",
+  "planned_values": {
+    "root_module": {
+      "resources": [
+        {"address":"aws_s3_bucket.site","mode":"managed","type":"aws_s3_bucket","name":"site","values":{"website":{"index_document":"index.html"}}},
+        {"address":"aws_s3_bucket_public_access_block.site","mode":"managed","type":"aws_s3_bucket_public_access_block","name":"site","values":{"bucket":"aws_s3_bucket.site","block_public_acls":false,"block_public_policy":false,"ignore_public_acls":false,"restrict_public_buckets":false}},
+        {"address":"aws_s3_bucket_policy.site","mode":"managed","type":"aws_s3_bucket_policy","name":"site","values":{"bucket":"aws_s3_bucket.site","policy":{"Statement":[{"Effect":"Allow","Principal":"*","Action":"s3:GetObject","Resource":"*"}]}}},
+        {"address":"aws_security_group.open","mode":"managed","type":"aws_security_group","name":"open","values":{"description":"","ingress":[{"cidr_blocks":["0.0.0.0/0"]}]}},
+        {"address":"aws_ebs_volume.data","mode":"managed","type":"aws_ebs_volume","name":"data","values":{"encrypted":false}},
+        {"address":"aws_instance.web","mode":"managed","type":"aws_instance","name":"web","values":{"monitoring":false,"disable_api_termination":false,"root_block_device":[{"encrypted":false}]}},
+        {"address":"aws_elb.classic","mode":"managed","type":"aws_elb","name":"classic","values":{"listener":[{"lb_protocol":"http"}],"access_logs":false,"connection_draining":false,"availability_zones":["a"],"cross_zone_load_balancing":false}},
+        {"address":"aws_security_group.db","mode":"managed","type":"aws_security_group","name":"db","values":{"description":"db","ingress":[{"cidr_blocks":["0.0.0.0/0"]}]}},
+        {"address":"aws_db_instance.db","mode":"managed","type":"aws_db_instance","name":"db","values":{"engine":"mysql","storage_encrypted":false,"multi_az":false,"deletion_protection":false,"port":3306,"backup_retention_period":0,"vpc_security_group_ids":["aws_security_group.db"]}},
+        {"address":"aws_rds_cluster.cluster","mode":"managed","type":"aws_rds_cluster","name":"cluster","values":{"engine":"aurora-mysql","storage_encrypted":false,"iam_database_authentication_enabled":false,"deletion_protection":false,"port":3306,"backtrack_window":0,"engine_mode":"serverless","enabled_cloudwatch_logs_exports":[]}},
+        {"address":"aws_sqs_queue.queue","mode":"managed","type":"aws_sqs_queue","name":"queue","values":{"sqs_managed_sse_enabled":false}},
+        {"address":"aws_sns_topic.topic","mode":"managed","type":"aws_sns_topic","name":"topic","values":{}},
+        {"address":"aws_vpc.main","mode":"managed","type":"aws_vpc","name":"main","values":{}},
+        {"address":"aws_network_acl.bad","mode":"managed","type":"aws_network_acl","name":"bad","values":{}},
+        {"address":"aws_efs_file_system.files","mode":"managed","type":"aws_efs_file_system","name":"files","values":{"encrypted":false}},
+        {"address":"aws_kms_key.key","mode":"managed","type":"aws_kms_key","name":"key","values":{"enable_key_rotation":false}},
+        {"address":"aws_lambda_function.old","mode":"managed","type":"aws_lambda_function","name":"old","values":{"runtime":"python3.9"}}
+      ]
+    }
+  },
+  "configuration": {
+    "root_module": {
+      "resources": [
+        {"address":"aws_s3_bucket.site","type":"aws_s3_bucket","name":"site","expressions":{}},
+        {"address":"aws_s3_bucket_policy.site","type":"aws_s3_bucket_policy","name":"site","expressions":{"bucket":{"references":["aws_s3_bucket.site.id"]}}},
+        {"address":"aws_security_group.open","type":"aws_security_group","name":"open","expressions":{}}
+      ]
+    }
+  }
+}
