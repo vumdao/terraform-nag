@@ -88,7 +88,9 @@ def rs4(res, ctx):
     ("aws_redshift_cluster", "aws_redshift_logging"),
     "RedshiftClusterAuditLogging",
     attributes={
-        "aws_redshift_cluster": ("logging.enable",),
+        # The inline logging block was removed from aws_redshift_cluster in provider v6,
+        # so it is still read below for older plans but is no longer schema-validated.
+        "aws_redshift_cluster": (),
         "aws_redshift_logging": ("cluster_identifier", "log_destination_type"),
     },
 )

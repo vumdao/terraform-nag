@@ -17,7 +17,7 @@ if [[ -z "$(git status --porcelain -- tfnag/data)" ]]; then
   exit 0
 fi
 
-git config user.email "devops@theaccessgroup.com"
+git config user.email "noreply@github.com"
 git config user.name "github-actions[bot]"
 git checkout -B "$BRANCH"
 git add tfnag/data

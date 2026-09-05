@@ -130,7 +130,7 @@
     "id": "EKS1",
     "rule": "EKSClusterNoEndpointPublicAccess",
     "level": "ERROR",
-    "info": "",
+    "info": "The EKS cluster's Kubernetes API server endpoint has public access enabled.",
     "cfn": [
       "Cluster"
     ],
@@ -140,7 +140,7 @@
     "id": "EKS2",
     "rule": "EKSClusterControlPlaneLogs",
     "level": "ERROR",
-    "info": "",
+    "info": "The EKS Cluster does not publish 'api', 'audit', 'authenticator, 'controllerManager', and 'scheduler' control plane logs.",
     "cfn": [
       "Cluster"
     ],

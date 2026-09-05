@@ -2,22 +2,19 @@
 Container-image functions and custom provided runtimes are not applicable.
 """
 
+import json
+from pathlib import Path
+
 from ..model import UNKNOWN, Compliance, Level
 from ..registry import rule
 
-# Latest generally available managed runtime per language family.
-# Source: https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html (2026-08-27).
-LATEST_RUNTIMES = {
-    "python": "python3.14",
-    "nodejs": "nodejs24.x",
-    "java": "java25",
-    "dotnet": "dotnet10",
-    "ruby": "ruby4.0",
-    "go": "provided.al2023",
-}
-
-# Public-preview runtimes are newer than the latest GA release, so they are accepted too.
-PREVIEW_RUNTIMES = frozenset({"nodejs26.x", "python3.15"})
+# Latest generally available managed runtime per language family, plus the
+# public-preview runtimes that are newer than any GA release. The file is
+# refreshed from the AWS documentation by scripts/sync_upstream.py.
+RUNTIMES_PATH = Path(__file__).parent.parent / "data" / "lambda_runtimes.json"
+_RUNTIMES = json.loads(RUNTIMES_PATH.read_text(encoding="utf-8"))
+LATEST_RUNTIMES: dict[str, str] = _RUNTIMES["latest"]
+PREVIEW_RUNTIMES: frozenset[str] = frozenset(_RUNTIMES["preview"])
 
 
 @rule(

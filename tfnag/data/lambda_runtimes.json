@@ -1,0 +1,16 @@
+{
+  "source": "https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html",
+  "fetched": "2026-08-27",
+  "latest": {
+    "python": "python3.14",
+    "nodejs": "nodejs24.x",
+    "java": "java25",
+    "dotnet": "dotnet10",
+    "ruby": "ruby4.0",
+    "go": "provided.al2023"
+  },
+  "preview": [
+    "nodejs26.x",
+    "python3.15"
+  ]
+}
