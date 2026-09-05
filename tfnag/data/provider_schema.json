@@ -8461,6 +8461,21 @@
                         "description_kind": "plain"
                       },
                       "max_items": 1
+                    },
+                    "pod_gc_controller_config": {
+                      "nesting_mode": "list",
+                      "block": {
+                        "attributes": {
+                          "terminated_pod_gc_threshold": {
+                            "type": "number",
+                            "description_kind": "plain",
+                            "optional": true,
+                            "computed": true
+                          }
+                        },
+                        "description_kind": "plain"
+                      },
+                      "max_items": 1
                     }
                   },
                   "description_kind": "plain"
