@@ -1,6 +1,6 @@
 """Refresh every vendored upstream artefact and report what drifted.
 
-Run by `azure-pipelines/upstream-sync.yml` weekly; also useful by hand:
+Run by `.github/workflows/upstream-sync.yml` weekly; also useful by hand:
 
     python scripts/sync_upstream.py --summary-out sync-summary.md
 
@@ -41,7 +41,8 @@ PROVIDER_CONFIG = """terraform {
 
 
 def fetch(url: str) -> str:
-    request = urllib.request.Request(url, headers={"User-Agent": "tf-nag-upstream-sync"})
+    request = urllib.request.Request(
+        url, headers={"User-Agent": "tf-nag-upstream-sync"})
     with urllib.request.urlopen(request, timeout=TIMEOUT) as response:  # noqa: S310
         return response.read().decode("utf-8")
 
@@ -55,7 +56,8 @@ def write_json(path: Path, payload: object) -> None:
 
 
 def sync_pack(source: str) -> report_module.SyncReport:
-    merged, report = pack.merge(read_json(PACK_PATH), pack.parse_upstream(source))
+    merged, report = pack.merge(
+        read_json(PACK_PATH), pack.parse_upstream(source))
     if report.drifted:
         write_json(PACK_PATH, merged)
     return report
@@ -109,19 +111,23 @@ def sync_schema(schema: dict) -> report_module.SyncReport:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--pack-file", type=Path, help="local copy of aws-solutions.ts")
-    parser.add_argument("--runtimes-file", type=Path, help="local copy of the AWS runtimes page")
+    parser.add_argument("--pack-file", type=Path,
+                        help="local copy of aws-solutions.ts")
+    parser.add_argument("--runtimes-file", type=Path,
+                        help="local copy of the AWS runtimes page")
     parser.add_argument(
         "--schema-file", type=Path, help="local terraform providers schema -json output"
     )
     parser.add_argument(
         "--skip-schema", action="store_true", help="leave the provider schema snapshot untouched"
     )
-    parser.add_argument("--summary-out", type=Path, help="write the Markdown summary here")
+    parser.add_argument("--summary-out", type=Path,
+                        help="write the Markdown summary here")
     args = parser.parse_args()
 
     pack_source = (
-        args.pack_file.read_text(encoding="utf-8") if args.pack_file else fetch(pack.SOURCE_URL)
+        args.pack_file.read_text(
+            encoding="utf-8") if args.pack_file else fetch(pack.SOURCE_URL)
     )
     runtimes_source = (
         args.runtimes_file.read_text(encoding="utf-8")
@@ -131,7 +137,8 @@ def main() -> int:
 
     reports = [sync_pack(pack_source), sync_runtimes(runtimes_source)]
     if not args.skip_schema:
-        schema = read_json(args.schema_file) if args.schema_file else terraform_schema()
+        schema = read_json(
+            args.schema_file) if args.schema_file else terraform_schema()
         reports.append(sync_schema(schema))
 
     summary = report_module.markdown(reports)

@@ -14,7 +14,8 @@ from .suppressions import dead_suppressions
 def _summary(findings: list[Finding], suppressions: list[dict] | None, strict: bool) -> list[str]:
     if strict:
         return []
-    suppressed = [finding for finding in findings if finding.suppression is not None]
+    suppressed = [
+        finding for finding in findings if finding.suppression is not None]
     if not suppressed and not suppressions:
         return []
     entry_ids = {
@@ -50,7 +51,8 @@ def render(
                 "shortDescription": {"text": INVENTORY.get(rule_id, {}).get("info", rule_id)},
                 "fullDescription": {
                     "text": INVENTORY.get(rule_id, {}).get(
-                        "explanation", INVENTORY.get(rule_id, {}).get("info", rule_id)
+                        "explanation", INVENTORY.get(
+                            rule_id, {}).get("info", rule_id)
                     )
                 },
             }
@@ -67,8 +69,7 @@ def render(
                                 "name": "tf-nag",
                                 "version": __version__,
                                 "informationUri": (
-                                    "https://dev.azure.com/access-devops/Access%20Vincere/"
-                                    "_git/terraform-nag"
+                                    "https://github.com/vumdao/terraform-nag.git"
                                 ),
                                 "rules": rules,
                             }
@@ -79,7 +80,8 @@ def render(
                                 "level": "warning" if f.level == Level.WARN else "error",
                                 "message": {"text": f.message},
                                 "locations": [
-                                    {"physicalLocation": {"artifactLocation": {"uri": f.address}}}
+                                    {"physicalLocation": {
+                                        "artifactLocation": {"uri": f.address}}}
                                 ],
                                 **(
                                     {
@@ -107,9 +109,11 @@ def render(
             "testsuite", name="tf-nag", tests=str(len(findings)), failures=str(failures)
         )
         for finding in findings:
-            case = SubElement(suite, "testcase", name=f"{finding.rule_id} {finding.address}")
+            case = SubElement(suite, "testcase",
+                              name=f"{finding.rule_id} {finding.address}")
             if finding.suppression:
-                skipped = SubElement(case, "skipped", message=finding.suppression)
+                skipped = SubElement(
+                    case, "skipped", message=finding.suppression)
                 skipped.text = finding.suppression
             else:
                 failure = SubElement(case, "failure", type=finding.level.value)
@@ -133,7 +137,8 @@ def render(
     lines = ["LEVEL       RULE              ADDRESS                         MESSAGE"]
     lines += [
         f"{'SUPPRESSED' if f.suppression else f.level.value:<10}  {f.rule_id:<16}  "
-        f"{f.address:<30}  {f.message}" + (f" [reason: {f.suppression}]" if f.suppression else "")
+        f"{f.address:<30}  {f.message}" +
+        (f" [reason: {f.suppression}]" if f.suppression else "")
         for f in findings
     ]
     lines.extend(_summary(findings, suppressions, strict))
