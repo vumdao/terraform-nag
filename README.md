@@ -49,6 +49,36 @@ The same workflow can be piped without an intermediate file:
 terraform show -json tf.plan | tf-nag scan --plan-json -
 ```
 
+### Example run
+
+```
+$ terraform plan -out=tf.plan -refresh=false -lock=false
+
+module.demo_custom_domain.data.aws_route53_zone.hosted_zone[0]: Reading...
+module.demo_svc.module.demo_lambda.data.aws_iam_policy_document.lambda_assume_role: Reading...
+module.demo_svc.module.demo_lambda.data.aws_iam_policy_document.lambda_assume_role: Read complete after 0s [id=1792567899]
+module.demo_svc.module.demo_lambda.data.aws_iam_policy_document.lambda_policy: Reading...
+module.demo_svc.module.demo_lambda.data.aws_iam_policy_document.lambda_policy: Read complete after 0s [id=1012345678]
+module.demo_custom_domain.data.aws_route53_zone.hosted_zone[0]: Read complete after 2s [id=Z45F22PP7P3PP]
+
+No changes. Your infrastructure matches the configuration.
+
+Terraform has compared your real infrastructure against your configuration and found no differences, so no changes are needed.
+
+⚡ $ terraform show -json tf.plan > plan.json
+
+⚡ $ uvx --from /tmp/terraform-nag tf-nag scan --plan-json plan.json
+LEVEL       RULE              ADDRESS                         MESSAGE
+ERROR       AwsSolutions-APIG1  module.demo_svc.module.demo_gw.aws_api_gateway_stage.demo-gw-stage  The API does not have access logging enabled.
+ERROR       AwsSolutions-APIG2  module.demo_svc.aws_api_gateway_rest_api.demo-gw-api  The REST API does not have request validation enabled.
+WARN        AwsSolutions-APIG3  module.demo_svc.module.demo_gw.aws_api_gateway_stage.demo-gw-stage  The REST API stage is not associated with AWS WAFv2 web ACL.
+ERROR       AwsSolutions-APIG4  module.demo_svc.module.demo_gw.aws_api_gateway_method.demo-gw-method  The API does not implement authorization.
+ERROR       AwsSolutions-APIG4  module.demo_svc.module.demo_gw.aws_api_gateway_method.demo-gw-options  The API does not implement authorization.
+ERROR       AwsSolutions-COG4  module.demo_svc.module.demo_gw.aws_api_gateway_method.demo-gw-method  The API GW method does not use a Cognito user pool authorizer.
+WARN        AwsSolutions-DDB3  module.demo_svc.module.demo_cached_table.aws_dynamodb_table.demo-ld-cached-table  The DynamoDB table does not have Point-in-time Recovery enabled.
+ERROR       AwsSolutions-IAM5  module.demo_svc.module.demo_lambda.aws_iam_policy.demo-lambda-policy  The IAM entity contains wildcard permissions and does not have a tf-nag rule suppression with evidence for those permission.
+```
+
 Exit codes are **0** for clean (or when `--fail-on never` is used), **1** when
 an ERROR finding is present, and **2** for WARN-only findings when
 `--fail-on warn` is selected. **3** indicates a malformed suppression
