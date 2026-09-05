@@ -107,9 +107,8 @@ bare top-level array:
   "suppressions": [
     {
       "id": "AwsSolutions-APIG1",
-      "resources": ["vfl_gw.aws_api_gateway_stage.vfl-gw-stage"],
-      "reason": "Access logging handled centrally",
-      "expires": "2026-12-31"
+      "resources": ["demo_gw.aws_api_gateway_stage.demo-gw-stage"],
+      "reason": "Access logging handled centrally"
     }
   ]
 }
@@ -118,8 +117,8 @@ bare top-level array:
 `id` must be a registered rule ID. `resources` matches a full Terraform
 address or a trailing suffix on whole `.`-segment boundaries, so the example
 matches
-`module.vfl_svc.module.vfl_gw.aws_api_gateway_stage.vfl-gw-stage`, but not
-`gw-stage` or `stage.vfl-gw-stage`. `*` globs are supported within a segment.
+`module.demo_svc.module.demo_gw.aws_api_gateway_stage.demo-gw-stage`, but not
+`gw-stage` or `stage.demo-gw-stage`. `*` globs are supported within a segment.
 An address without a `count`/`for_each` instance key matches every expanded
 instance; an address with a key matches only that instance. Use
 `"resources": ["*"]` to suppress every resource for that rule.
