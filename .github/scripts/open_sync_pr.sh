@@ -2,9 +2,10 @@
 # Push the refreshed vendored data and open (or update) the upstream-sync PR.
 #
 # Expects to run from an actions/checkout working tree with GH_TOKEN set to a
-# token that can push and open pull requests. Sets the step outputs prUrl and
-# prId. Only runs when the sync step reported drift; the check below is a
-# safety net for manual invocation.
+# token that can push and open pull requests. Requires "Allow GitHub Actions
+# to create and approve pull requests" enabled for the repo. Sets the step
+# outputs prUrl and prId. Only runs when the sync step reported drift; the
+# check below is a safety net for manual invocation.
 set -euo pipefail
 
 BRANCH="${SYNC_BRANCH:?SYNC_BRANCH is required}"
