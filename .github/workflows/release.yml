@@ -1,0 +1,104 @@
+# Build and publish tf-nag to PyPI when a version tag is pushed.
+#
+# Releases are cut deliberately by tagging a commit on master with `vX.Y.Z`
+# (matching the version in pyproject.toml), which avoids duplicate-publish
+# failures from firing on every merge. The publish job is pinned to the `pypi`
+# GitHub Environment, which carries a required-reviewer protection rule: the
+# build runs automatically, then the workflow pauses and waits for a manual
+# approval before anything is uploaded to PyPI.
+name: release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  PYTHON_VERSION: '3.12'
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  # Build sdist + wheel and run the test suite. No secrets are needed here, so
+  # it stays outside the gated environment and gives reviewers a green artifact
+  # to approve.
+  build:
+    name: Build distribution
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: run_checks
+        run: |
+          set -euo pipefail
+          python -m pip install --quiet pytest ruff
+          python -m pip install --quiet .
+          python -m pytest -q
+          python -m ruff check .
+
+      - name: build_dist
+        run: |
+          set -euo pipefail
+          python -m pip install --quiet build
+          python -m build
+
+      - name: upload_dist
+        uses: actions/upload-artifact@v7
+        with:
+          name: dist
+          path: dist/
+
+  # Gated on the `pypi` environment. Execution halts here until a required
+  # reviewer approves the deployment, then the stored API token is used to
+  # upload the artifact built above.
+  publish:
+    name: Publish to PyPI
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/project/tf-nag/
+    steps:
+      - name: download_dist
+        uses: actions/download-artifact@v7
+        with:
+          name: dist
+          path: dist/
+
+      - name: publish_to_pypi
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}
+
+  # Publish a GitHub Release for the tag once the package is on PyPI, attaching
+  # the built sdist/wheel and auto-generated notes. Runs only for tag pushes;
+  # a manual workflow_dispatch has no tag to release against.
+  github_release:
+    name: Create GitHub Release
+    needs: publish
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: download_dist
+        uses: actions/download-artifact@v7
+        with:
+          name: dist
+          path: dist/
+
+      - name: create_release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: dist/*
