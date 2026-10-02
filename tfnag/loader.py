@@ -10,6 +10,10 @@ from typing import Any, Iterable
 from .model import UNKNOWN, Resource, normalize_address
 
 
+class PlanLoadError(Exception):
+    """Raised when the --plan-json input cannot be read as Terraform JSON."""
+
+
 def _unknown_paths(value: Any, prefix: str = "") -> set[str]:
     paths: set[str] = set()
     if value is True:
@@ -189,8 +193,32 @@ def load_document(document: dict[str, Any]) -> tuple[list[Resource], dict[str, A
     return resources, configuration
 
 
+_NOT_JSON_HINT = (
+    "expected Terraform plan or state JSON. If this is a binary plan file "
+    "(e.g. the output of `terraform plan -out`), convert it first with "
+    "`terraform show -json <plan> > plan.json`."
+)
+
+
+def _parse_json(raw: str, source: str) -> Any:
+    try:
+        return json.loads(raw)
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise PlanLoadError(f"{source}: {_NOT_JSON_HINT}") from exc
+
+
 def load_plan(path: str | Path) -> tuple[list[Resource], dict[str, Any]]:
     if str(path) == "-":
-        return load_document(json.load(sys.stdin))
-    with Path(path).open(encoding="utf-8") as stream:
-        return load_document(json.load(stream))
+        raw = sys.stdin.buffer.read()
+        source = "<stdin>"
+    else:
+        try:
+            raw = Path(path).read_bytes()
+        except OSError as exc:
+            raise PlanLoadError(f"{path}: {exc.strerror or exc}") from exc
+        source = str(path)
+    try:
+        text = raw.decode("utf-8")
+    except UnicodeDecodeError as exc:
+        raise PlanLoadError(f"{source}: {_NOT_JSON_HINT}") from exc
+    return load_document(_parse_json(text, source))

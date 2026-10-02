@@ -7,15 +7,11 @@ import sys
 
 from . import __version__
 from .engine import scan
-from .loader import load_plan
+from .loader import PlanLoadError, load_plan
 from .registry import INVENTORY, discover, status
 from .reporters import exit_code, render
-from .suppressions import (
-    CONFIG_ERROR_EXIT,
-    SuppressionConfigError,
-    load_suppressions,
-    suppression_path,
-)
+from .suppressions import (CONFIG_ERROR_EXIT, SuppressionConfigError,
+                           load_suppressions, suppression_path)
 
 
 def parser() -> argparse.ArgumentParser:
@@ -48,7 +44,11 @@ def main(argv: list[str] | None = None) -> int:
     except SuppressionConfigError as exc:
         print(f"tf-nag: suppression configuration error: {exc}", file=sys.stderr)
         return CONFIG_ERROR_EXIT
-    resources, configuration = load_plan(args.plan_json)
+    try:
+        resources, configuration = load_plan(args.plan_json)
+    except PlanLoadError as exc:
+        print(f"tf-nag: {exc}", file=sys.stderr)
+        return CONFIG_ERROR_EXIT
     findings = scan(resources, configuration, args.unknown_as, suppressions, args.strict)
     print(render(findings, args.format, suppressions, args.strict))
     return exit_code(findings, args.fail_on)
