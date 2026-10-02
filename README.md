@@ -8,27 +8,36 @@ https://github.com/cdklabs/cdk-nag.
 
 ## Installation
 
-Clone this repository and install its development environment with `uv`:
+`tf-nag` is published on PyPI: https://pypi.org/project/tf-nag/.
+
+Install it with `pip`:
+
+```bash
+pip install tf-nag
+tf-nag --version
+```
+
+Or run it without installing, using `uvx`:
+
+```bash
+uvx tf-nag --version
+```
+
+To pin a specific release in a pipeline:
+
+```bash
+pip install tf-nag==0.1.0
+```
+
+### From source
+
+To work on `tf-nag` itself, clone the repository and install its development
+environment with `uv`:
 
 ```bash
 git clone git@github.com:vumdao/terraform-nag.git
 cd terraform-nag
 uv sync --group dev
-```
-
-For a one-off invocation without installing globally:
-
-```bash
-uvx --from . tf-nag --version
-```
-
-For a regular virtual environment or pipeline installation:
-
-```bash
-python -m venv .venv
-. .venv/bin/activate
-pip install .
-tf-nag --version
 ```
 
 ## Manual run (plan JSON)
@@ -67,7 +76,7 @@ Terraform has compared your real infrastructure against your configuration and f
 
 ⚡ $ terraform show -json tf.plan > plan.json
 
-⚡ $ uvx --from /tmp/terraform-nag tf-nag scan --plan-json plan.json
+⚡ $ tf-nag scan --plan-json plan.json
 LEVEL       RULE              ADDRESS                         MESSAGE
 ERROR       AwsSolutions-APIG1  module.demo_svc.module.demo_gw.aws_api_gateway_stage.demo-gw-stage  The API does not have access logging enabled.
 ERROR       AwsSolutions-APIG2  module.demo_svc.aws_api_gateway_rest_api.demo-gw-api  The REST API does not have request validation enabled.
