@@ -1,5 +1,7 @@
 # tf-nag
 
+![tf-nag cover](docs/cover.png)
+
 `tf-nag` is an offline Python CLI that checks Terraform plan or state JSON
 against the tf-nag AWS Solutions rules. It does not contact AWS.
 
