@@ -5,13 +5,44 @@ build-backend = "hatchling.build"
 [project]
 name = "tf-nag"
 version = "0.1.1"
-description = "Offline Terraform plan scanner for the tf-nag AWS Solutions rules"
+description = "Offline Terraform plan scanner for the AWS Solutions rules (cdk-nag lineage)"
 readme = "README.md"
 requires-python = ">=3.11"
+license = "MIT"
+authors = [{ name = "Vu Dao", email = "mr.minhvu.dao@gmail.com" }]
+keywords = [
+    "terraform",
+    "aws",
+    "security",
+    "compliance",
+    "cdk-nag",
+    "static-analysis",
+    "iac",
+    "linter",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Security",
+    "Topic :: Software Development :: Quality Assurance",
+    "Topic :: System :: Systems Administration",
+    "Typing :: Typed",
+]
 dependencies = []
 
 [project.urls]
+Homepage = "https://github.com/vumdao/terraform-nag"
+Documentation = "https://github.com/vumdao/terraform-nag#readme"
 Repository = "https://github.com/vumdao/terraform-nag.git"
+Issues = "https://github.com/vumdao/terraform-nag/issues"
 
 [project.scripts]
 tf-nag = "tfnag.cli:main"
