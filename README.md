@@ -6,7 +6,52 @@
 against the tf-nag AWS Solutions rules. It does not contact AWS.
 
 Rule IDs and severity levels are derived from the upstream AWS Solutions pack:
-https://github.com/cdklabs/cdk-nag.
+https://github.com/cdklabs/cdk-nag. cdk-nag's Rules and Packs are in turn
+derived from AWS Config managed rules and conformance packs, so a tf-nag
+finding traces back through cdk-nag to an AWS-published control.
+
+## Why tf-nag
+
+Terraform makes it easy to ship AWS infrastructure, and just as easy to ship
+infrastructure that is missing an access log, running an unencrypted volume,
+holding a wildcard IAM policy, or pinned to a Lambda runtime AWS deprecated
+long ago. You usually find out after it is live: during an audit, an incident,
+or a surprise runtime end-of-life notice.
+
+The cheapest place to catch all of that is `terraform plan`, before anything
+reaches an account. `tf-nag` is a scanner you can run on a plan file, in a
+pull request, with no credentials and no network. Its rule set *is* the AWS
+Solutions pack, so "do I enforce control X" has a definite answer rather than
+depending on which policies a general-purpose scanner happens to ship.
+
+### How it compares to Checkov
+
+[Checkov](https://www.checkov.io/) is a broad, multi-framework scanner with its
+own large catalog of `CKV_*` policies. `tf-nag` is deliberately narrower: it
+enforces the AWS Solutions / AWS Config lineage of controls on Terraform plans,
+with full fidelity to that pack. The two are complementary; you can run both.
+
+The difference that matters is provenance and completeness within that lineage.
+Checkov's policies are its own and overlap with AWS best practices but are not
+a one-to-one map of AWS Config rules, so coverage of any given control is a
+maintainer judgment call. `tf-nag`'s rules are the AWS Solutions pack, so
+nothing in that pack is silently skipped.
+
+A concrete example motivated this. A team ran Checkov on every Terraform PR and
+considered Lambda covered, until a function broke after AWS deprecated its
+runtime. The plan had been shipping an old runtime for months and nothing in
+the pipeline objected: the policies in play did not flag "this function is not
+on the latest supported runtime for its language."
+
+`tf-nag` closes that gap with **`AwsSolutions-L1`** (ERROR), the cdk-nag
+`LambdaLatestVersion` control mapped onto `aws_lambda_function.runtime`. It
+compares each function's runtime against the latest generally available runtime
+for its language family (`python`, `nodejs`, `java`, `dotnet`, `ruby`, `go`)
+and flags anything behind. The latest-runtime table is a vendored snapshot
+refreshed from the official AWS Lambda supported-runtimes docs, public-preview
+runtimes are accepted but kept distinct from GA so they do not falsely look
+non-compliant, and container-image or custom `provided` runtimes are treated as
+not-applicable.
 
 ## Installation
 
@@ -198,10 +243,4 @@ the rule module docstrings.
 
 ## Limitations
 
-This phase does not parse HCL, resolve resources created outside Terraform,
-inspect `null_resource`/local-exec or embedded CloudFormation, or provide
-baseline support. Dynamic policy documents that cannot be statically resolved
-are reported as UNKNOWN and follow `--unknown-as`. Terraform plan JSON does
-not contain source file or line locations; SARIF locations therefore contain
-Terraform resource addresses. The implementation follows the tf-nag AWS
-Solutions IDs and levels, not Checkov/tfsec IDs.
+This phase does not parse HCL, resolve resources created outside Terraform, inspect `null_resource`/local-exec or embedded CloudFormation, or provide baseline support. Dynamic policy documents that cannot be statically resolved are reported as UNKNOWN and follow `--unknown-as`. Terraform plan JSON does not contain source file or line locations; SARIF locations therefore contain Terraform resource addresses. The implementation follows the tf-nag AWS Solutions IDs and levels, not Checkov/tfsec IDs.
