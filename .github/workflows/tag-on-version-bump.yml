@@ -36,6 +36,20 @@ jobs:
           # automatic GITHUB_TOKEN do not start new workflow runs.
           token: ${{ secrets.RELEASE_PAT }}
 
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+
+      # Gate the tag on the same checks release.yml runs, so a commit that would
+      # fail the release build never gets tagged in the first place.
+      - name: run_checks
+        run: |
+          set -euo pipefail
+          python -m pip install --quiet pytest ruff
+          python -m pip install --quiet .
+          python -m pytest -q
+          python -m ruff check .
+
       - name: read_version
         id: version
         run: |

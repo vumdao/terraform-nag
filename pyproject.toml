@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "tf-nag"
 version = "0.1.1"
-description = "tf-nag: Offline Terraform plan scanner for the AWS Solutions rules (cdk-nag lineage)"
+description = "Offline Terraform plan scanner for the AWS Solutions rules (cdk-nag lineage)"
 readme = "README.md"
 requires-python = ">=3.11"
 license = "MIT"

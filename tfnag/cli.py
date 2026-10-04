@@ -10,8 +10,12 @@ from .engine import scan
 from .loader import PlanLoadError, load_plan
 from .registry import INVENTORY, discover, status
 from .reporters import exit_code, render
-from .suppressions import (CONFIG_ERROR_EXIT, SuppressionConfigError,
-                           load_suppressions, suppression_path)
+from .suppressions import (
+    CONFIG_ERROR_EXIT,
+    SuppressionConfigError,
+    load_suppressions,
+    suppression_path,
+)
 
 
 def parser() -> argparse.ArgumentParser:
