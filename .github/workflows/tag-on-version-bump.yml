@@ -31,6 +31,10 @@ jobs:
         with:
           # Full history + tags so we can see every existing release tag.
           fetch-depth: 0
+          # Push the tag with a PAT (not the default GITHUB_TOKEN) so the tag
+          # push event is allowed to trigger release.yml. Pushes made with the
+          # automatic GITHUB_TOKEN do not start new workflow runs.
+          token: ${{ secrets.RELEASE_PAT }}
 
       - name: read_version
         id: version
