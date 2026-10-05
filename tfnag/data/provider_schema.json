@@ -6099,6 +6099,14 @@
                 "description_kind": "plain",
                 "optional": true,
                 "computed": true
+              },
+              "warning_event_categories": {
+                "type": [
+                  "set",
+                  "string"
+                ],
+                "description_kind": "plain",
+                "optional": true
               }
             },
             "block_types": {
@@ -22658,6 +22666,14 @@
                 "description_kind": "plain",
                 "optional": true,
                 "computed": true
+              },
+              "warning_event_categories": {
+                "type": [
+                  "set",
+                  "string"
+                ],
+                "description_kind": "plain",
+                "optional": true
               }
             },
             "block_types": {
@@ -25205,6 +25221,12 @@
                 "type": "number",
                 "description_kind": "plain",
                 "optional": true
+              },
+              "maximum_message_size": {
+                "type": "number",
+                "description_kind": "plain",
+                "optional": true,
+                "computed": true
               },
               "name": {
                 "type": "string",
