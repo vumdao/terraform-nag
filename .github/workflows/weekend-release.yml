@@ -1,0 +1,131 @@
+# Cut a release on Saturdays when master has moved since the last release.
+#
+# This is the front of the release chain. On a schedule (Saturday), compare the
+# latest `vX.Y.Z` tag against HEAD on master. If there are new commits, bump the
+# patch version in pyproject.toml (X.Y.Z -> X.Y.(Z+1)), create a release commit,
+# and push it to master.
+#
+# Pushing the pyproject.toml bump is what drives the rest of the pipeline:
+#   weekend-release (here) -> tag-on-version-bump.yml -> release.yml
+# so the commit is pushed with RELEASE_PAT (not the default GITHUB_TOKEN), since
+# pushes made with GITHUB_TOKEN do not trigger other workflow runs.
+name: weekend-release
+
+on:
+  schedule:
+    # 06:00 UTC every Saturday.
+    - cron: '0 6 * * 6'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  TARGET_BRANCH: master
+
+concurrency:
+  group: weekend-release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Bump patch version if master moved
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          # Full history + tags so we can see the latest release tag and the
+          # commits since it.
+          fetch-depth: 0
+          ref: ${{ env.TARGET_BRANCH }}
+          # Push the bump with a PAT so the push event is allowed to trigger
+          # tag-on-version-bump.yml. Pushes made with the automatic
+          # GITHUB_TOKEN do not start new workflow runs.
+          token: ${{ secrets.RELEASE_PAT }}
+
+      - name: check_for_new_commits
+        id: changes
+        run: |
+          set -euo pipefail
+
+          # Highest existing vX.Y.Z tag using version-aware sort.
+          latest_tag="$(git tag -l 'v[0-9]*.[0-9]*.[0-9]*' \
+            | sed 's/^v//' \
+            | sort -t. -k1,1n -k2,2n -k3,3n \
+            | tail -n1)"
+
+          if [ -z "$latest_tag" ]; then
+            echo "No existing release tags found; nothing to compare against. Skipping." >&2
+            echo "proceed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "Latest release tag: v${latest_tag}"
+
+          # Count commits on HEAD that are not reachable from the tag.
+          new_commits="$(git rev-list --count "v${latest_tag}..HEAD")"
+          echo "Commits since v${latest_tag}: ${new_commits}"
+
+          if [ "$new_commits" -eq 0 ]; then
+            echo "No new commits since the last release; nothing to do."
+            echo "proceed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "latest=$latest_tag" >> "$GITHUB_OUTPUT"
+          echo "proceed=true" >> "$GITHUB_OUTPUT"
+
+      - name: compute_next_version
+        id: version
+        if: steps.changes.outputs.proceed == 'true'
+        env:
+          LATEST: ${{ steps.changes.outputs.latest }}
+        run: |
+          set -euo pipefail
+
+          # Source of truth for the current version is pyproject.toml.
+          current="$(grep -E '^version\s*=' pyproject.toml | head -n1 \
+            | sed -E 's/.*=\s*"([^"]+)".*/\1/')"
+          if ! printf '%s' "$current" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "::error::pyproject.toml version '$current' is not a plain X.Y.Z version." >&2
+            exit 1
+          fi
+
+          major="${current%%.*}"
+          rest="${current#*.}"
+          minor="${rest%%.*}"
+          patch="${rest#*.}"
+
+          next="${major}.${minor}.$((patch + 1))"
+
+          echo "Current version: ${current}"
+          echo "Next version:    ${next}"
+          echo "current=$current" >> "$GITHUB_OUTPUT"
+          echo "next=$next" >> "$GITHUB_OUTPUT"
+
+      - name: bump_and_push
+        if: steps.changes.outputs.proceed == 'true'
+        env:
+          CURRENT: ${{ steps.version.outputs.current }}
+          NEXT: ${{ steps.version.outputs.next }}
+        run: |
+          set -euo pipefail
+
+          # Replace only the project version line (first `version = "..."`).
+          perl -0pi -e 'BEGIN{$done=0} s/^version\s*=\s*"[^"]+"/version = "$ENV{NEXT}"/m unless $done++' pyproject.toml
+
+          # Confirm the edit landed.
+          updated="$(grep -E '^version\s*=' pyproject.toml | head -n1 \
+            | sed -E 's/.*=\s*"([^"]+)".*/\1/')"
+          if [ "$updated" != "$NEXT" ]; then
+            echo "::error::Failed to update pyproject.toml version to ${NEXT} (got '${updated}')." >&2
+            exit 1
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add pyproject.toml
+          git commit -m "Release ${NEXT}"
+          git push origin "HEAD:${TARGET_BRANCH}"
+
+          echo "Pushed release commit bumping ${CURRENT} -> ${NEXT}."
