@@ -22592,6 +22592,12 @@
                 "optional": true,
                 "computed": true
               },
+              "publicly_accessible": {
+                "type": "bool",
+                "description_kind": "plain",
+                "optional": true,
+                "computed": true
+              },
               "reader_endpoint": {
                 "type": "string",
                 "description_kind": "plain",
