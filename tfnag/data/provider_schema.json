@@ -5919,6 +5919,12 @@
                 "optional": true,
                 "computed": true
               },
+              "multi_tenant": {
+                "type": "bool",
+                "description_kind": "plain",
+                "optional": true,
+                "computed": true
+              },
               "nchar_character_set_name": {
                 "type": "string",
                 "description_kind": "plain",
@@ -17370,6 +17376,12 @@
                       "description_kind": "plain",
                       "required": true
                     },
+                    "kms_key_arn": {
+                      "type": "string",
+                      "description_kind": "plain",
+                      "optional": true,
+                      "computed": true
+                    },
                     "retention_period": {
                       "type": "number",
                       "description_kind": "plain",
@@ -20296,6 +20308,12 @@
                 "optional": true
               },
               "neptune_subnet_group_name": {
+                "type": "string",
+                "description_kind": "plain",
+                "optional": true,
+                "computed": true
+              },
+              "network_type": {
                 "type": "string",
                 "description_kind": "plain",
                 "optional": true,
